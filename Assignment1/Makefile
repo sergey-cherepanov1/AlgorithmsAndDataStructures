@@ -2,26 +2,31 @@ CXX = g++
 CXXFLAGS = -Werror -Wpedantic -Wall
 TARGET = ascii85
 TEST_TARGET = test
+OBJDIR = obj
 
-SRCS = $(wildcard *.cpp)
-TESTS = $(wildcard test_*.cpp)
+MAIN_SRCS = $(filter-out tests.cpp, $(wildcard *.cpp))
+TEST_SRC = tests.cpp
 
-OBJS = $(SRCS:.cpp=.o)
-TEST_OBJS = $(TESTS:.cpp=.o)
+MAIN_OBJS = $(MAIN_SRCS:%.cpp=$(OBJDIR)/%.o)
+TEST_OBJ = $(TEST_SRC:%.cpp=$(OBJDIR)/%.o)
 
-all: $(TARGET)
+TEST_DEPS = $(filter-out $(OBJDIR)/main.o, $(MAIN_OBJS))
 
-test: $(TEST_TARGET)
-	./$(TEST_TARGET)
+.PHONY: all test clean
 
-$(TARGET): $(OBJS)
+all: $(OBJDIR) $(TARGET)
+
+$(TARGET): $(MAIN_OBJS)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
-$(TEST_TARGET): $(filter-out main.o,$(OBJS)) $(TEST_OBJS)
+$(TEST_TARGET): $(TEST_DEPS) $(TEST_OBJ)
 	$(CXX) $(CXXFLAGS) $^ -o $@ -lgtest -lgtest_main -pthread
 
-%.o: %.cpp
+$(OBJDIR)/%.o: %.cpp | $(OBJDIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+$(OBJDIR):
+	mkdir -p $(OBJDIR)
+
 clean:
-	rm -f $(OBJS) $(TEST_OBJS) $(TARGET) $(TEST_TARGET)
+	rm -rf $(OBJDIR) $(TARGET) $(TEST_TARGET)
