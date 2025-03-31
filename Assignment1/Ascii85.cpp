@@ -2,7 +2,7 @@
    Assignment1
 */
 
-#include "Ascii85.hpp"
+#include "Ascii85.h"
 #include <stdexcept>
 #include <array>
 
@@ -28,13 +28,13 @@ void Ascii85::encodeStream(std::istream& in, std::ostream& out) {
     }
 }
 
-void Ascii85::processEncodeBuffer(uint32_t num, size_t count, ostream& out) {
+void Ascii85::processEncodeBuffer(uint32_t num, size_t count, std::ostream& out) {
     if (num == 0 && count == 4) {
         out << 'z';
         return;
     }
     
-    array<char, 5> chars;
+    std::array<char, 5> chars;
     for (int i = 4; i >= 0; --i) {
         chars[i] = static_cast<char>(num % 85 + 33);
         num /= 85;
@@ -43,8 +43,8 @@ void Ascii85::processEncodeBuffer(uint32_t num, size_t count, ostream& out) {
     out.write(chars.data(), count + 1);
 }
 
-void Ascii85::decodeStream(istream& in, ostream& out) {
-    vector<uint32_t> group;
+void Ascii85::decodeStream(std::istream& in, std::ostream& out) {
+    std::vector<uint32_t> group;
     char c;
     
     while (in.get(c)) {
@@ -52,14 +52,14 @@ void Ascii85::decodeStream(istream& in, ostream& out) {
         
         if (c == 'z') {
             if (!group.empty()) {
-                throw runtime_error("'z' in middle of group");
+                throw std::runtime_error("'z' in middle of group");
             }
             out.write("\0\0\0\0", 4);
             continue;
         }
         
         if (!isValidChar(c)) {
-            throw runtime_error("Invalid ASCII85 character");
+            throw std::runtime_error("Invalid ASCII85 character");
         }
         
         group.push_back(c - 33);
@@ -72,13 +72,13 @@ void Ascii85::decodeStream(istream& in, ostream& out) {
     
     if (!group.empty()) {
         if (group.size() == 1) {
-            throw runtime_error("Incomplete final group");
+            throw std::runtime_error("Incomplete final group");
         }
         processDecodeBuffer(group, out);
     }
 }
 
-void Ascii85::processDecodeBuffer(vector<uint32_t>& group, ostream& out) {
+void Ascii85::processDecodeBuffer(std::vector<uint32_t>& group, std::ostream& out) {
     uint32_t num = 0;
     for (auto val : group) {
         num = num * 85 + val;
@@ -89,7 +89,7 @@ void Ascii85::processDecodeBuffer(vector<uint32_t>& group, ostream& out) {
         num = num * 85 + 84;
     }
     
-    array<uint8_t, 4> bytes;
+    std::array<uint8_t, 4> bytes;
     for (int i = 3; i >= 0; --i) {
         bytes[i] = static_cast<uint8_t>(num & 0xFF);
         num >>= 8;
@@ -102,18 +102,18 @@ bool Ascii85::isValidChar(char c) {
     return c >= 33 && c <= 117;
 }
 
-string Ascii85::encode(vector<uint8_t>& data) {
-    stringstream ss;
-    vector<uint8_t> copy(data);
-    stringstream in(string(copy.begin(), copy.end()));
+std::string Ascii85::encode(std::vector<uint8_t>& data) {
+    std::stringstream ss;
+    std::vector<uint8_t> copy(data);
+    std::stringstream in(std::string(copy.begin(), copy.end()));
     encodeStream(in, ss);
     return ss.str();
 }
 
-vector<uint8_t> Ascii85::decode(string& data) {
-    stringstream ss(data);
-    stringstream out;
+std::vector<uint8_t> Ascii85::decode(std::string& data) {
+    std::stringstream ss(data);
+    std::stringstream out;
     decodeStream(ss, out);
-    string result = out.str();
-    return vector<uint8_t>(result.begin(), result.end());
+    std::string result = out.str();
+    return std::vector<uint8_t>(result.begin(), result.end());
 }

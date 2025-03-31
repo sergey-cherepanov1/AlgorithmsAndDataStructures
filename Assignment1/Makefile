@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -std=c++11 -Werror -Wpedantic -Wall
+CXXFLAGS = -Werror -Wpedantic -Wall
 TARGET = ascii85
 TEST_TARGET = test
 

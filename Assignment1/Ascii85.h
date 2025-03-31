@@ -2,12 +2,13 @@
    Assignment1
 */
 
-#ifndef ASCII85_HPP
-#define ASCII85_HPP
+#ifndef ASCII85_H
+#define ASCII85_H
 
 #include <iostream>
 #include <vector>
 #include <cstdint>
+#include <sstream>
 
 class Ascii85 {
 public:
