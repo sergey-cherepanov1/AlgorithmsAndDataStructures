@@ -1,4 +1,3 @@
-```markdown
 # ASCII85 Encoder/Decoder
 
 ## Overview
