@@ -1,39 +1,54 @@
-### ASCII85 Encoder/Decoder
+```markdown
+# ASCII85 Encoder/Decoder
 
-#### Overview
+## Overview
 Interactive command-line tool for encoding/decoding text and binary data using ASCII85 format.
 
-#### Build
+## Build
+```bash
 make
+```
 
-#### Usage Modes
+## Usage Modes
 
-1. **Interactive Mode** (default):
+### 1. Interactive Mode (default)
 
-# Encoding
+#### Encoding
+```bash
 ./ascii85
 Hello
 87cURD
 [Ctrl+D to exit]
+```
 
-# Decoding 
+#### Decoding
+```bash
 ./ascii85 -d
 87cURD
 Hello
 [Ctrl+D to exit]
+```
 
-2. **Single-command Mode**:
+### 2. Single-command Mode
 
-# Encode one string
+#### Encode one string
+```bash
 echo "Hello" | ./ascii85
+```
 
-# Decode one string
+#### Decode one string
+```bash
 echo "87cURD" | ./ascii85 -d
+```
 
-3. **File Processing**:
+### 3. File Processing
 
-# Encode file
+#### Encode file
+```bash
 ./ascii85 < input.txt > encoded.txt
+```
 
-# Decode file
+#### Decode file
+```bash
 ./ascii85 -d < encoded.txt > output.txt
+```
