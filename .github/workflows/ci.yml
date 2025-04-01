@@ -14,7 +14,8 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y g++ make python3 libgtest-dev
+          sudo apt-get install -y g++ make python3 libgtest-dev python3-pip
+          python3 -m pip install pytest
 
       - name: Build Assignment${{ matrix.assignment }}
         working-directory: Assignment${{ matrix.assignment }}
@@ -25,3 +26,4 @@ jobs:
         run: |
           make test
           ./test
+          python3 -m pytest tests.py -v
